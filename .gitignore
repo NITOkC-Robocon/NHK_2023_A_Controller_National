@@ -1,0 +1,8 @@
+BUILD
+.mbed
+compile_commands.json
+.cache
+.clangd
+mbed
+rotary-encoder-lib
+RotaryEncoder

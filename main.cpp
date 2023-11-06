@@ -4,7 +4,7 @@
 #define FINGER_COEFFICIENT -1
 #define WRIST_X_COEFFICIENT 1
 #define WRIST_Y_COEFFICIENT 1.2
-#define WRIST_Z_COEFFICIENT 1
+#define WRIST_Z_COEFFICIENT -1.5
 
 #define FINGER_CORRECTION 0x00
 #define WRIST_X_CORRECTION 0x80
@@ -45,81 +45,65 @@ int main()
         check_sum = 0x00;
         Shishi.putc((char)0xFF);
 
-        wait_ms(1);
+        wait_us(1500);
 
         extended_information = (!HelperHeight.read() << 7) + (!AUTO.read() << 6) + (!LiftUp.read() << 5) + (!LiftDown.read() << 4) + (!CurtainOpen.read() << 3) + (!CurtainClose.read() << 2) + (RE_lock.read() << 1); 
         Shishi.putc((char)extended_information);
         check_sum += extended_information;
 
-        wait_ms(1);
+        wait_us(1500);
 
         int RE_finger_sign = (int)(RE_finger.Get_Count() * FINGER_COEFFICIENT + FINGER_CORRECTION);
     
         if(RE_finger_sign > 0xFE) {
-            Shishi.putc(0xFE);
-            check_sum += 0xFE;
+            RE_finger_sign = 0xFE;
         }
-        else if(RE_finger_sign < 0x00) {
-            Shishi.putc(0x00);
-            check_sum += 0x00;
+        else if(RE_finger_sign < 0) {
+            RE_finger_sign = 0x00;
         }
-        else {
-            Shishi.putc(RE_finger_sign);
-            check_sum += RE_finger_sign;
-        }
+        Shishi.putc(RE_finger_sign);
+        check_sum += RE_finger_sign;
 
-        wait_ms(1);
+        wait_us(1500);
 
         int RE_wristX_sign = (int)(RE_wristX.Get_Count() * WRIST_X_COEFFICIENT + WRIST_X_CORRECTION);
 
         if(RE_wristX_sign > 0xFE) {
-            Shishi.putc(0xFE);
-            check_sum += 0xFE;
+            RE_wristX_sign = 0xFE;
         }
-        else if(RE_wristX_sign < 0x00) {
-            Shishi.putc(0x00);
-            check_sum += 0x00;
+        else if(RE_wristX_sign < 0) {
+            RE_wristX_sign = 0x00;
         }
-        else {
-            Shishi.putc(RE_wristX_sign);
-            check_sum += RE_wristX_sign;
-        }
+        Shishi.putc(RE_wristX_sign);
+        check_sum += RE_wristX_sign;
         
-        wait_ms(1);
+        wait_us(1500);
 
         int RE_wristY_sign = (int)(RE_wristY.Get_Count() * WRIST_Y_COEFFICIENT + WRIST_Y_CORRECTION);
 
         if(RE_wristY_sign > 0xFE) {
-            Shishi.putc(0xFE);
-            check_sum += 0xFE;
+            RE_wristY_sign = 0xFE;
         }
-        else if(RE_wristY_sign < 0) {
-            Shishi.putc(0x00);
-            check_sum += 0x00;
+        else if(RE_wristY_sign < 0x00) {
+            RE_wristY_sign = 0x00;
         }
-        else {
-            Shishi.putc(RE_wristY_sign);
-            check_sum += RE_wristY_sign;
-        }
+        Shishi.putc(RE_wristY_sign);
+        check_sum += RE_wristY_sign;
         
-        wait_ms(1);
+        wait_us(1500);
 
         int RE_wristZ_sign = (int)(RE_wristZ.Get_Count() * WRIST_Z_COEFFICIENT + WRIST_Z_CORRECTION);
 
         if(RE_wristZ_sign > 0xFE) {
-            Shishi.putc(0xFE);
-            check_sum += 0xFE;
+            RE_wristZ_sign = 0xFE;
         }
-        else if(RE_wristZ_sign < 0) {
-            Shishi.putc(0x00);
-            check_sum += 0x00;
+        else if(RE_wristZ_sign < 0x00) {
+            RE_wristZ_sign = 0x00;
         }
-        else {
-            Shishi.putc(RE_wristZ_sign);
-            check_sum += RE_wristZ_sign;
-        }
+        Shishi.putc(RE_wristZ_sign);
+        check_sum += RE_wristZ_sign;
 
-        wait_ms(1);
+        wait_us(1500);
 
         if(check_sum % 0x100 == 0xFF) {
             Shishi.putc(0xFE);
@@ -128,9 +112,9 @@ int main()
             Shishi.putc(check_sum % 0x100);
         }
 
-        // PC.printf("\033[H");
-        PC.printf("%#04X%02X%02X%02X%02X%02X\r\n", extended_information, RE_finger_sign, RE_wristX_sign, RE_wristY_sign, RE_wristZ_sign, (check_sum % 0x100));
+        PC.printf("\033[H");
+        PC.printf("0x %02X %02X %02X %02X %02X %02X", extended_information, RE_finger_sign, RE_wristX_sign, RE_wristY_sign, RE_wristZ_sign, (check_sum % 0x100));
         // PC.printf("AUTO :    %d\r\nUP   :    %d\r\nDOWN :    %d\r\nOPEN :    %d\r\nCLOSE:    %d\r\nLOCK :    %d\r\nHELP :    %d\r\nN-RX : %4d\r\nN-RY : %4d\r\nCHIN : %4d",!AUTO.read(),!LiftUp.read(),!LiftDown.read(),!CurtainOpen.read(),!CurtainClose.read(),RE_lock.read(),!HelperHeight.read(),RE_wristX.Get_Count(),RE_wristY.Get_Count(),RE_finger.Get_Count());
-        wait_ms(1);
+        wait_us(1500);
     }
 }

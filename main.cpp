@@ -4,7 +4,7 @@
 #define FINGER_COEFFICIENT -1
 #define WRIST_X_COEFFICIENT 1
 #define WRIST_Y_COEFFICIENT 1.2
-#define WRIST_Z_COEFFICIENT -1.5
+#define WRIST_Z_COEFFICIENT -0.75
 
 #define FINGER_CORRECTION 0x00
 #define WRIST_X_CORRECTION 0x80
@@ -66,20 +66,7 @@ int main()
 
         wait_us(1500);
 
-        int RE_wristX_sign = (int)(RE_wristX.Get_Count() * WRIST_X_COEFFICIENT + WRIST_X_CORRECTION);
-
-        if(RE_wristX_sign > 0xFE) {
-            RE_wristX_sign = 0xFE;
-        }
-        else if(RE_wristX_sign < 0) {
-            RE_wristX_sign = 0x00;
-        }
-        Shishi.putc(RE_wristX_sign);
-        check_sum += RE_wristX_sign;
-        
-        wait_us(1500);
-
-        int RE_wristY_sign = (int)(RE_wristY.Get_Count() * WRIST_Y_COEFFICIENT + WRIST_Y_CORRECTION);
+        int RE_wristY_sign = (int)((RE_wristY.Get_Count() - 20) * WRIST_Y_COEFFICIENT + WRIST_Y_CORRECTION);
 
         if(RE_wristY_sign > 0xFE) {
             RE_wristY_sign = 0xFE;
@@ -92,7 +79,20 @@ int main()
         
         wait_us(1500);
 
-        int RE_wristZ_sign = (int)(RE_wristZ.Get_Count() * WRIST_Z_COEFFICIENT + WRIST_Z_CORRECTION);
+        int RE_wristX_sign = (int)(RE_wristX.Get_Count() * WRIST_X_COEFFICIENT * ((RE_wristY_sign > 0x80) ? 0.65 : 1.0) + WRIST_X_CORRECTION);
+
+        if(RE_wristX_sign > 0xFE) {
+            RE_wristX_sign = 0xFE;
+        }
+        else if(RE_wristX_sign < 0) {
+            RE_wristX_sign = 0x00;
+        }
+        Shishi.putc(RE_wristX_sign);
+        check_sum += RE_wristX_sign;
+        
+        wait_us(1500);
+
+        int RE_wristZ_sign = (int)(RE_wristZ.Get_Count() * WRIST_Z_COEFFICIENT * ((RE_wristY_sign > 0x80) ? 0.5 : 1.0) + WRIST_Z_CORRECTION);
 
         if(RE_wristZ_sign > 0xFE) {
             RE_wristZ_sign = 0xFE;
@@ -100,6 +100,7 @@ int main()
         else if(RE_wristZ_sign < 0x00) {
             RE_wristZ_sign = 0x00;
         }
+
         Shishi.putc(RE_wristZ_sign);
         check_sum += RE_wristZ_sign;
 

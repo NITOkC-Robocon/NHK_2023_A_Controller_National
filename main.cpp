@@ -1,10 +1,10 @@
 #include "mbed.h"
 #include "RotaryEncoder.h"
 
-#define FINGER_COEFFICIENT -1
-#define WRIST_X_COEFFICIENT 1
-#define WRIST_Y_COEFFICIENT 1.2
-#define WRIST_Z_COEFFICIENT -0.75
+#define FINGER_COEFFICIENT -1.1
+#define WRIST_X_COEFFICIENT 1.2
+#define WRIST_Y_COEFFICIENT 1.3
+#define WRIST_Z_COEFFICIENT 0.75
 
 #define FINGER_CORRECTION 0x00
 #define WRIST_X_CORRECTION 0x80
@@ -79,7 +79,7 @@ int main()
         
         wait_us(1500);
 
-        int RE_wristX_sign = (int)(RE_wristX.Get_Count() * WRIST_X_COEFFICIENT * ((RE_wristY_sign > 0x80) ? 0.65 : 1.0) + WRIST_X_CORRECTION);
+        int RE_wristX_sign = (int)(RE_wristX.Get_Count() * WRIST_X_COEFFICIENT * ((RE_wristY_sign > 0x80) ? (RE_wristY_sign > 0xE8 ? 0.6 : 0.85) : 1.0) + WRIST_X_CORRECTION);
 
         if(RE_wristX_sign > 0xFE) {
             RE_wristX_sign = 0xFE;

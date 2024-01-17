@@ -1,10 +1,10 @@
 #include "mbed.h"
 #include "RotaryEncoder.h"
 
-#define FINGER_COEFFICIENT -1.1
+#define FINGER_COEFFICIENT -1.3
 #define WRIST_X_COEFFICIENT 1.2
 #define WRIST_Y_COEFFICIENT 1.3
-#define WRIST_Z_COEFFICIENT 0.75
+#define WRIST_Z_COEFFICIENT -0.75
 
 #define FINGER_CORRECTION 0x00
 #define WRIST_X_CORRECTION 0x80
